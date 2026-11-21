@@ -17,6 +17,25 @@ export class HashMap {
         return hashcode;
     }
 
+    //resize the bucket capacity when number of element exceed certain limit
+    #resize() {
+        const oldBuckets = this.buckets;
+        this.capacity *= 2;
+        this.buckets = new Array(this.capacity);
+    
+        for (const bucket of oldBuckets) {
+          if (!bucket) continue;
+          for (const entry of bucket) {
+            const index = this.hash(entry.key);
+            this.#checkBounds(index);
+            if (!this.buckets[index]) {
+              this.buckets[index] = [];
+            }
+            this.buckets[index].push({ key: entry.key, value: entry.value });
+          }
+        }
+    }
+
     #checkBounds(index) {
         if (index < 0 || index >= this.buckets.length) {
           throw new Error("Trying to access index out of bounds");
@@ -41,6 +60,9 @@ export class HashMap {
                 }
             }
             this.buckets[hashKey].push(bucket)
+        }
+        if (this.buckets.length > this.capacity * this.loadFactor){
+            this.#resize();
         }
     }
     // takes a key as an argument and returns the value that is associated with it.
