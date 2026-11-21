@@ -38,10 +38,9 @@ export class HashMap {
             for (const b of this.buckets[hashKey]){
                 if (b.key == key){
                     b.value = value;
-                }else{
-                    this.buckets[hashKey].push(bucket)
                 }
             }
+            this.buckets[hashKey].push(bucket)
         }
     }
     // takes a key as an argument and returns the value that is associated with it.
