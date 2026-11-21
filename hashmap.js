@@ -1,9 +1,9 @@
 export class HashMap {
-    constructor(loadFactor) {
-        this.buckets = [];
+    constructor(loadFactor=0.76, capacity=16) {
         this.loadFactor = loadFactor;
         //16 is the default size of array/map in many languages
         this.capacity = loadFactor == 0.75 ? 16 : 0;
+        this.buckets = new Array(this.capacity);
     }
 
     //takes a string key and produces a hash code with it
@@ -12,14 +12,22 @@ export class HashMap {
         let hashcode = 0;
 
         for (let i = 0; i < key.length; i++){
-            hashcode = hashcode * primeNumber + key.charCodeAt(i);
+            hashcode = (hashcode * primeNumber + key.charCodeAt(i)) % this.capacity;
         }
-        return hashcode % 16;
+        return hashcode;
+    }
+
+    #checkBounds(index) {
+        if (index < 0 || index >= this.buckets.length) {
+          throw new Error("Trying to access index out of bounds");
+        }
     }
     //takes two arguments: the first is a key and the second is a value to associate with the key. 
     // If the key already exists in the hash map, then the old value associated with it should be overwritten by the new one.
     set(key, value){
         const hashKey = this.hash(key)
+        this.#checkBounds(hashkey);
+        
         const bucketArr = new Array();
         const bucket = {key : key, value : value};
         
@@ -80,7 +88,7 @@ export class HashMap {
 
     // removes all entries in the hash map.
     clear(){
-        this.buckets.splice(0);
+        this.buckets = new Array(this.capacity);
     }
 
     //returns an array containing all the keys (not values) inside the hash map.
