@@ -45,7 +45,7 @@ export class HashMap {
     // If the key already exists in the hash map, then the old value associated with it should be overwritten by the new one.
     set(key, value){
         const hashKey = this.hash(key)
-        this.#checkBounds(hashkey);
+        this.#checkBounds(hashKey);
         
         const bucketArr = new Array();
         const bucket = {key : key, value : value};
